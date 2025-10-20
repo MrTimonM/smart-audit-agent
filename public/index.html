@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartAudit Agent - Autonomous Security Auditor</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔒</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --primary-light: #3b82f6;
+      --secondary: #64748b;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --danger-dark: #dc2626;
+      --gray-50: #f8fafc;
+      --gray-100: #f1f5f9;
+      --gray-200: #e2e8f0;
+      --gray-300: #cbd5e1;
+      --gray-400: #94a3b8;
+      --gray-500: #64748b;
+      --gray-600: #475569;
+      --gray-700: #334155;
+      --gray-800: #1e293b;
+      --gray-900: #0f172a;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      --radius: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background-color: var(--gray-50);
+      color: var(--gray-800);
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 0;
+      position: relative;
+      overflow-x: hidden;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    /* Header */
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 40px 0;
+      margin-bottom: 40px;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+      animation: float 15s ease-in-out infinite;
+      pointer-events: none;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+    
+    .header-content {
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      animation: slideDown 0.6s ease-out;
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    
+    .subtitle {
+      font-size: 1.125rem;
+      opacity: 0.9;
+      font-weight: 400;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    /* Cards */
+    .card {
+      background: white;
+      border-radius: var(--radius-xl);
+      padding: 32px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--gray-200);
+      animation: fadeInUp 0.6s ease-out;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-xl);
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+      color: var(--gray-900);
+    }
+    
+    /* Form Elements */
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--gray-700);
+    }
+    
+    input[type="text"], input[type="url"] {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--gray-300);
+      border-radius: var(--radius);
+      font-size: 16px;
+      transition: all 0.2s;
+      background-color: white;
+    }
+    
+    input[type="text"]:focus, input[type="url"]:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+    }
+    
+    button {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      border: none;
+      padding: 14px 32px;
+      border-radius: var(--radius);
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    /* Progress Section */
+    .progress-section {
+      display: none;
+      margin-top: 30px;
+    }
+    
+    .progress-section.active {
+      display: block;
+    }
+    
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: var(--gray-200);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 32px;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary) 0%, var(--primary-dark) 100%);
+      transition: width 0.5s ease;
+      width: 0%;
+    }
+    
+    /* Timeline */
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    
+    .timeline-item {
+      display: flex;
+      align-items: center;
+      padding: 20px;
+      background: var(--gray-50);
+      border-radius: var(--radius-lg);
+      transition: all 0.3s;
+      border-left: 4px solid transparent;
+    }
+    
+    .timeline-item.active {
+      background: rgba(37, 99, 235, 0.05);
+      border-left-color: var(--primary);
+    }
+    
+    .timeline-item.completed {
+      background: rgba(16, 185, 129, 0.05);
+      border-left-color: var(--success);
+    }
+    
+    .timeline-icon {
+      width: 40px;
+      height: 40px;
+      margin-right: 16px;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: white;
+      border-radius: 50%;
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .timeline-content h3 {
+      font-size: 16px;
+      margin-bottom: 4px;
+      font-weight: 600;
+      color: var(--gray-800);
+    }
+    
+    .timeline-content p {
+      font-size: 14px;
+      color: var(--gray-600);
+    }
+    
+    /* Logs */
+    .logs {
+      background: var(--gray-900);
+      color: var(--gray-200);
+      padding: 20px;
+      border-radius: var(--radius);
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Source Code Pro', monospace;
+      font-size: 13px;
+      max-height: 300px;
+      overflow-y: auto;
+      margin-top: 24px;
+      border: 1px solid var(--gray-700);
+    }
+    
+    .log-entry {
+      padding: 4px 0;
+      border-bottom: 1px solid var(--gray-700);
+    }
+    
+    .log-entry.info {
+      color: #60a5fa;
+    }
+    
+    .log-entry.success {
+      color: #34d399;
+    }
+    
+    .log-entry.warning {
+      color: #fbbf24;
+    }
+    
+    .log-entry.error {
+      color: #f87171;
+    }
+    
+    /* Results */
+    .results {
+      display: none;
+      margin-top: 30px;
+    }
+    
+    .results.active {
+      display: block;
+    }
+    
+    .summary-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    
+    .summary-card {
+      background: white;
+      padding: 24px;
+      border-radius: var(--radius-lg);
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+      border-left: 4px solid var(--gray-300);
+    }
+    
+    .summary-card.critical {
+      background: #fef2f2;
+      border-left-color: var(--danger);
+    }
+    
+    .summary-card.high {
+      background: #fffbeb;
+      border-left-color: var(--warning);
+    }
+    
+    .summary-card.medium {
+      background: #fefce8;
+      border-left-color: #eab308;
+    }
+    
+    .summary-card h4 {
+      font-size: 32px;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+    
+    .summary-card p {
+      color: var(--gray-600);
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    .pr-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 20px;
+      padding: 12px 24px;
+      background: var(--primary);
+      color: white;
+      text-decoration: none;
+      border-radius: var(--radius);
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    
+    .pr-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+      background: var(--primary-dark);
+    }
+    
+    /* Findings Section */
+    .findings-section {
+      margin-top: 40px;
+    }
+    
+    .findings-section h3 {
+      margin-bottom: 20px;
+      color: var(--gray-900);
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    
+    .finding-card {
+      background: white;
+      border-left: 4px solid var(--gray-400);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .finding-card:hover {
+      transform: translateX(4px);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .finding-card.critical {
+      border-left-color: var(--danger);
+      background: #fef2f2;
+    }
+    
+    .finding-card.high {
+      border-left-color: var(--warning);
+      background: #fffbeb;
+    }
+    
+    .finding-card.medium {
+      border-left-color: #eab308;
+      background: #fefce8;
+    }
+    
+    .finding-card.low {
+      border-left-color: var(--success);
+      background: #f0fdf4;
+    }
+    
+    .finding-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    
+    .finding-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--gray-900);
+      flex: 1;
+      margin-right: 16px;
+    }
+    
+    .finding-severity {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    
+    .finding-severity.critical {
+      background: var(--danger);
+      color: white;
+    }
+    
+    .finding-severity.high {
+      background: var(--warning);
+      color: white;
+    }
+    
+    .finding-severity.medium {
+      background: #eab308;
+      color: var(--gray-900);
+    }
+    
+    .finding-severity.low {
+      background: var(--success);
+      color: white;
+    }
+    
+    .finding-location {
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Source Code Pro', monospace;
+      color: var(--gray-600);
+      font-size: 14px;
+      margin-bottom: 12px;
+      background: var(--gray-100);
+      padding: 8px 12px;
+      border-radius: var(--radius);
+      display: inline-block;
+    }
+    
+    .finding-description {
+      color: var(--gray-700);
+      margin-bottom: 12px;
+      line-height: 1.6;
+      background: white;
+      padding: 16px;
+      border-radius: var(--radius);
+      border-left: 3px solid var(--gray-300);
+    }
+    
+    .code-snippet {
+      background: var(--gray-900);
+      color: var(--gray-200);
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Source Code Pro', monospace;
+      font-size: 13px;
+      padding: 16px;
+      border-radius: var(--radius);
+      overflow-x: auto;
+      margin: 12px 0;
+      border: 1px solid var(--gray-700);
+    }
+    
+    .code-snippet code {
+      color: #9cdcfe;
+    }
+    
+    .finding-recommendation {
+      background: var(--gray-50);
+      padding: 16px;
+      border-radius: var(--radius);
+      border-left: 3px solid var(--primary);
+      margin-top: 12px;
+    }
+    
+    .finding-recommendation strong {
+      color: var(--primary);
+    }
+    
+    /* Cost Estimate */
+    .cost-estimate {
+      background: #eff6ff;
+      border-left: 4px solid var(--primary);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-top: 32px;
+    }
+    
+    .cost-estimate h3 {
+      color: var(--primary-dark);
+      margin-bottom: 20px;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    
+    .cost-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid #dbeafe;
+    }
+    
+    .cost-item:last-child {
+      border-bottom: none;
+      font-weight: 600;
+      font-size: 18px;
+      padding-top: 16px;
+      margin-top: 12px;
+      border-top: 2px solid var(--primary);
+    }
+    
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 40px 0;
+      margin-top: 60px;
+      color: var(--gray-500);
+      font-size: 14px;
+      border-top: 1px solid var(--gray-200);
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        padding: 0 16px;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .subtitle {
+        font-size: 1rem;
+      }
+      
+      .card {
+        padding: 24px;
+      }
+      
+      .summary-cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .finding-header {
+        flex-direction: column;
+        gap: 12px;
+      }
+      
+      .finding-title {
+        margin-right: 0;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .summary-cards {
+        grid-template-columns: 1fr;
+      }
+      
+      .timeline-item {
+        padding: 16px;
+      }
+      
+      .timeline-icon {
+        width: 32px;
+        height: 32px;
+        margin-right: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <h1><span style="font-size: 2.5rem;">🔒</span> SmartAudit Agent</h1>
+        <p class="subtitle">Autonomous Security Auditor powered by ADK-TS & Gemini AI</p>
+      </div>
+    </div>
+  </header>
+  
+  <div class="container">
+    <div class="card">
+      <h2>Start Security Audit</h2>
+      <form id="auditForm">
+        <div class="form-group">
+          <label for="repoUrl">GitHub Repository URL</label>
+          <input 
+            type="url" 
+            id="repoUrl" 
+            name="repoUrl" 
+            placeholder="https://github.com/owner/repo" 
+            required
+          />
+        </div>
+        
+        <div class="form-group">
+          <label for="branch">Branch (optional)</label>
+          <input 
+            type="text" 
+            id="branch" 
+            name="branch" 
+            placeholder="main" 
+            value="main"
+          />
+        </div>
+        
+        <div class="form-group checkbox-group">
+          <input type="checkbox" id="runDynamicTests" name="runDynamicTests" checked />
+          <label for="runDynamicTests" style="margin: 0;">Run Dynamic Tests (Deploy to Arbitrum Sepolia)</label>
+        </div>
+        
+        <div class="form-group checkbox-group">
+          <input type="checkbox" id="createPullRequest" name="createPullRequest" checked />
+          <label for="createPullRequest" style="margin: 0;">Create Pull Request with Findings</label>
+        </div>
+        
+        <button type="submit" id="submitBtn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+            <polyline points="10 17 15 12 10 7"></polyline>
+            <line x1="15" y1="12" x2="3" y2="12"></line>
+          </svg>
+          Start Audit
+        </button>
+      </form>
+    </div>
+    
+    <div class="card progress-section" id="progressSection">
+      <h2>Audit in Progress</h2>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      
+      <div class="timeline" id="timeline">
+        <div class="timeline-item" data-step="clone">
+          <div class="timeline-icon">📥</div>
+          <div class="timeline-content">
+            <h3>Clone Repository</h3>
+            <p>Fetching smart contract code from GitHub</p>
+          </div>
+        </div>
+        
+        <div class="timeline-item" data-step="static">
+          <div class="timeline-icon">🔍</div>
+          <div class="timeline-content">
+            <h3>Static Analysis</h3>
+            <p>Running Slither, Solhint, and pattern checks</p>
+          </div>
+        </div>
+        
+        <div class="timeline-item" data-step="dynamic">
+          <div class="timeline-icon">🧪</div>
+          <div class="timeline-content">
+            <h3>Dynamic Testing</h3>
+            <p>Deploying to Arbitrum Sepolia testnet</p>
+          </div>
+        </div>
+        
+        <div class="timeline-item" data-step="ai">
+          <div class="timeline-icon">🤖</div>
+          <div class="timeline-content">
+            <h3>AI Analysis</h3>
+            <p>Generating fixes with Gemini AI</p>
+          </div>
+        </div>
+        
+        <div class="timeline-item" data-step="fix">
+          <div class="timeline-icon">🔧</div>
+          <div class="timeline-content">
+            <h3>Generate Fixes</h3>
+            <p>Creating automated security patches</p>
+          </div>
+        </div>
+        
+        <div class="timeline-item" data-step="pr">
+          <div class="timeline-icon">📝</div>
+          <div class="timeline-content">
+            <h3>Create Pull Request</h3>
+            <p>Submitting findings to GitHub</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="logs" id="logs"></div>
+    </div>
+    
+    <div class="card results" id="results">
+      <h2>Audit Complete</h2>
+      <div class="summary-cards" id="summaryCards"></div>
+      <div id="prLinkContainer"></div>
+    </div>
+  </div>
+  
+  <footer>
+    <div class="container">
+      <p>Built with ❤️ using ADK-TS</p>
+    </div>
+  </footer>
+  
+  <script>
+    // All JavaScript functionality remains exactly the same
+    let currentAuditId = null;
+    let currentStep = -1;
+    const steps = ['clone', 'static', 'dynamic', 'ai', 'fix', 'pr'];
+    
+    function addLog(message, type = 'info') {
+      const logs = document.getElementById('logs');
+      const entry = document.createElement('div');
+      entry.className = `log-entry ${type}`;
+      entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+      logs.appendChild(entry);
+      logs.scrollTop = logs.scrollHeight;
+    }
+    
+    function nextStep() {
+      if (currentStep >= 0) {
+        const prevItem = document.querySelector(`.timeline-item[data-step="${steps[currentStep]}"]`);
+        if (prevItem) prevItem.classList.add('completed');
+        if (prevItem) prevItem.classList.remove('active');
+      }
+      
+      currentStep++;
+      if (currentStep < steps.length) {
+        const item = document.querySelector(`.timeline-item[data-step="${steps[currentStep]}"]`);
+        if (item) item.classList.add('active');
+        
+        document.getElementById('progressFill').style.width = `${((currentStep + 1) / steps.length) * 100}%`;
+        
+        addLog(`${getStepText(steps[currentStep])}...`, 'info');
+      }
+    }
+    
+    function getStepText(step) {
+      const texts = {
+        clone: 'Cloning repository',
+        static: 'Running static analysis',
+        dynamic: 'Executing dynamic tests',
+        ai: 'Analyzing with AI',
+        fix: 'Generating fixes',
+        pr: 'Creating pull request'
+      };
+      return texts[step] || step;
+    }
+    
+    async function checkAuditStatus(auditId) {
+      try {
+        const response = await fetch(`/api/audit/${auditId}`);
+        const audit = await response.json();
+        
+        // Update progress if available
+        if (audit.progress) {
+          updateProgress(audit.progress);
+        }
+        
+        if (audit.status === 'completed' && audit.result) {
+          showResults(audit.result);
+        } else if (audit.status === 'failed') {
+          addLog(`Audit failed: ${audit.error || 'Unknown error'}`, 'error');
+          document.getElementById('submitBtn').disabled = false;
+        } else if (audit.status === 'running') {
+          // Continue polling while running
+          setTimeout(() => checkAuditStatus(auditId), 2000);
+        }
+      } catch (error) {
+        addLog(`Error checking status: ${error.message}`, 'error');
+      }
+    }
+    
+    function updateProgress(progress) {
+      const stepIndex = steps.indexOf(progress.step);
+      if (stepIndex >= 0 && stepIndex !== currentStep) {
+        currentStep = stepIndex;
+        
+        // Update timeline
+        document.querySelectorAll('.timeline-item').forEach(item => {
+          item.classList.remove('active', 'completed');
+        });
+        
+        steps.forEach((step, index) => {
+          const item = document.querySelector(`.timeline-item[data-step="${step}"]`);
+          if (index < currentStep) {
+            item?.classList.add('completed');
+          } else if (index === currentStep) {
+            item?.classList.add('active');
+          }
+        });
+        
+        // Update progress bar
+        document.getElementById('progressFill').style.width = 
+          `${((currentStep + 1) / steps.length) * 100}%`;
+        
+        // Add log
+        addLog(progress.message, 'info');
+      }
+    }
+    
+    function showResults(result) {
+      console.log('Showing results:', result);
+      console.log('Findings:', result.findings);
+      
+      // Summary cards
+      const summaryHTML = `
+        <div class="summary-card critical">
+          <h4>${result.summary.critical}</h4>
+          <p>Critical</p>
+        </div>
+        <div class="summary-card high">
+          <h4>${result.summary.high}</h4>
+          <p>High</p>
+        </div>
+        <div class="summary-card medium">
+          <h4>${result.summary.medium}</h4>
+          <p>Medium</p>
+        </div>
+        <div class="summary-card">
+          <h4>${result.summary.total}</h4>
+          <p>Total Issues</p>
+        </div>
+        <div class="summary-card">
+          <h4>${result.fixes.length}</h4>
+          <p>Auto Fixes</p>
+        </div>
+      `;
+      document.getElementById('summaryCards').innerHTML = summaryHTML;
+      
+      // Detailed findings
+      if (result.findings && result.findings.length > 0) {
+        const findingsHTML = result.findings
+          .sort((a, b) => {
+            const severityOrder = { critical: 0, high: 1, medium: 2, low: 3 };
+            return severityOrder[a.severity] - severityOrder[b.severity];
+          })
+          .map(finding => {
+            // Extract code snippet from description if it contains "Found suspicious pattern:"
+            const descMatch = finding.description.match(/Found suspicious pattern: (.+)/);
+            const codeSnippet = descMatch ? descMatch[1] : null;
+            const cleanDescription = descMatch 
+              ? `This pattern was detected in your code and may pose a security risk.` 
+              : finding.description;
+            
+            return `
+            <div class="finding-card ${finding.severity}">
+              <div class="finding-header">
+                <div class="finding-title">${finding.title}</div>
+                <span class="finding-severity ${finding.severity}">${finding.severity}</span>
+              </div>
+              
+              <div class="finding-location">
+                ${finding.file}:${finding.line} 
+                <span style="color: var(--gray-400); margin-left: 10px;">|</span>
+                <span style="color: var(--gray-500); margin-left: 10px;">Tool: ${finding.tool}</span>
+                <span style="color: var(--gray-400); margin-left: 10px;">|</span>
+                <span style="color: var(--gray-500); margin-left: 10px;">Confidence: ${finding.confidence}</span>
+              </div>
+              
+              <div class="finding-description">
+                <strong>Description:</strong><br>
+                ${cleanDescription}
+              </div>
+              
+              ${codeSnippet ? `
+                <div class="code-snippet">
+                  <strong style="color: #60a5fa;">Code at Line ${finding.line}:</strong><br>
+                  <code>${codeSnippet.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code>
+                </div>
+              ` : ''}
+              
+              ${finding.recommendation ? `
+                <div class="finding-recommendation">
+                  <strong>How to Fix:</strong><br>
+                  ${finding.recommendation}
+                </div>
+              ` : ''}
+              
+              <div style="margin-top: 10px; font-size: 12px; color: var(--gray-500);">
+                Finding ID: ${finding.id} | Category: ${finding.category || 'security'}
+              </div>
+            </div>
+          `}).join('');
+        
+        const findingsSection = `
+          <div class="findings-section">
+            <h3>Detailed Security Findings</h3>
+            <p style="color: var(--gray-600); margin-bottom: 20px;">
+              Found ${result.findings.length} potential vulnerabilities. 
+              Click on each finding for detailed information including file location, line number, and fix recommendations.
+            </p>
+            ${findingsHTML}
+          </div>
+        `;
+        document.getElementById('summaryCards').insertAdjacentHTML('afterend', findingsSection);
+      } else {
+        // No findings
+        const noFindingsSection = `
+          <div class="findings-section">
+            <h3>Detailed Security Findings</h3>
+            <p style="color: var(--success); font-size: 18px; margin-top: 20px;">
+              No security issues found! Your contract looks secure.
+            </p>
+          </div>
+        `;
+        document.getElementById('summaryCards').insertAdjacentHTML('afterend', noFindingsSection);
+      }
+      
+      // Audit cost savings
+      const savings = calculateAuditSavings(result);
+      const savingsHTML = `
+        <div class="cost-estimate">
+          <h3>Professional Audit Cost (What You Would Have Paid)</h3>
+          <div class="cost-item">
+            <span>Traditional Audit Firm (CertiK, Trail of Bits, etc.)</span>
+            <span>$${savings.traditional.toLocaleString()}</span>
+          </div>
+          <div class="cost-item">
+            <span>Budget Audit Service</span>
+            <span>$${savings.budget.toLocaleString()}</span>
+          </div>
+          <div class="cost-item">
+            <span>Freelance Auditor (Upwork/Fiverr)</span>
+            <span>$${savings.freelance.toLocaleString()}</span>
+          </div>
+          <div class="cost-item">
+            <span><strong>SmartAudit Agent (This Tool)</strong></span>
+            <span><strong style="color: var(--success);">$0</strong></span>
+          </div>
+          <div class="cost-item" style="background: linear-gradient(135deg, var(--success) 0%, #34d399 100%); color: white; padding: 15px; border-radius: var(--radius); margin-top: 10px;">
+            <span><strong>YOUR SAVINGS</strong></span>
+            <span><strong>$${savings.saved.toLocaleString()}</strong></span>
+          </div>
+          <p style="margin-top: 15px; font-size: 14px; color: var(--gray-600);">
+            <strong>Potential Loss if Exploited:</strong> These ${result.summary.total} vulnerabilities could result in losses ranging from 
+            <strong>$${savings.potentialLoss.min.toLocaleString()}</strong> to 
+            <strong>$${savings.potentialLoss.max.toLocaleString()}</strong> depending on contract TVL (Total Value Locked).
+          </p>
+          <p style="margin-top: 10px; font-size: 14px; color: var(--primary);">
+            <strong>ROI:</strong> By using SmartAudit Agent, you saved $${savings.saved.toLocaleString()} and prevented potential losses of up to $${savings.potentialLoss.max.toLocaleString()}!
+          </p>
+        </div>
+      `;
+      document.getElementById('summaryCards').insertAdjacentHTML('afterend', savingsHTML);
+      
+      // PR Link
+      if (result.prUrl) {
+        document.getElementById('prLinkContainer').innerHTML =
+          `<a href="${result.prUrl}" target="_blank" class="pr-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+            View Pull Request on GitHub
+          </a>`;
+      }
+      
+      document.getElementById('results').classList.add('active');
+      document.getElementById('progressSection').style.display = 'none';
+      document.getElementById('submitBtn').disabled = false;
+      addLog('Audit completed successfully!', 'success');
+    }
+    
+    function calculateAuditSavings(result) {
+      // Calculate what they would have paid professional auditors
+      const issueComplexity = result.summary.critical + result.summary.high + (result.summary.medium * 0.5);
+      const baseComplexity = Math.max(issueComplexity, 1); // Minimum 1
+      
+      // Market rates for professional audits (2024-2025 prices)
+      const traditional = Math.max(15000, baseComplexity * 8000); // CertiK, Trail of Bits, OpenZeppelin
+      const budget = Math.max(8000, baseComplexity * 4000);       // Smaller firms like Hacken, QuillAudits
+      const freelance = Math.max(3000, baseComplexity * 1500);    // Independent auditors
+      
+      const saved = traditional; // They saved the most expensive option
+      
+      // Potential loss calculation (realistic estimates based on severity)
+      const potentialLoss = {
+        min: result.summary.critical * 100000 + result.summary.high * 50000 + result.summary.medium * 10000,
+        max: result.summary.critical * 5000000 + result.summary.high * 1000000 + result.summary.medium * 250000
+      };
+      
+      // If no critical/high, adjust potential loss for medium-only
+      if (result.summary.critical === 0 && result.summary.high === 0 && result.summary.medium > 0) {
+        potentialLoss.min = Math.max(25000, result.summary.medium * 10000);
+        potentialLoss.max = Math.max(150000, result.summary.medium * 75000);
+      }
+      
+      return { traditional, budget, freelance, saved, potentialLoss };
+    }
+    
+    document.getElementById('auditForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(e.target);
+      const data = {
+        repoUrl: formData.get('repoUrl'),
+        branch: formData.get('branch') || 'main',
+        runDynamicTests: formData.get('runDynamicTests') === 'on',
+        createPullRequest: formData.get('createPullRequest') === 'on'
+      };
+      
+      document.getElementById('submitBtn').disabled = true;
+      document.getElementById('progressSection').classList.add('active');
+      document.getElementById('results').classList.remove('active');
+      document.getElementById('logs').innerHTML = '';
+      currentStep = -1;
+      
+      try {
+        addLog('Starting security audit...', 'info');
+        const response = await fetch('/api/audit/start', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        
+        const result = await response.json();
+        currentAuditId = result.auditId;
+        addLog(`Audit ID: ${currentAuditId}`, 'info');
+        nextStep();
+        
+        // Start polling for status
+        setTimeout(() => checkAuditStatus(currentAuditId), 2000);
+        
+      } catch (error) {
+        addLog(`Failed to start audit: ${error.message}`, 'error');
+        document.getElementById('submitBtn').disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

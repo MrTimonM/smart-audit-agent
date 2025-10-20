@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  smart-audit-agent:
+    build: .
+    container_name: smart-audit-agent
+    ports:
+      - "3000:3000"
+    environment:
+      # AI Model
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - LLM_MODEL=${LLM_MODEL:-gemini-2.5-flash}
+      
+      # GitHub
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      
+      # Blockchain
+      - TESTNET_PRIVATE_KEY=${TESTNET_PRIVATE_KEY}
+      - RPC_URLS=${RPC_URLS}
+      - CHAIN_ID=${CHAIN_ID:-421614}
+      
+      # Telegram
+      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
+      - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID}
+      
+      # Server
+      - PORT=3000
+      - BASE_URL=${BASE_URL:-http://localhost:3000}
+      
+      # Features
+      - ENABLE_STATIC_ANALYSIS=${ENABLE_STATIC_ANALYSIS:-true}
+      - ENABLE_DYNAMIC_TESTING=${ENABLE_DYNAMIC_TESTING:-true}
+      - ENABLE_AUTO_PR=${ENABLE_AUTO_PR:-true}
+      - ENABLE_TELEGRAM_NOTIFICATIONS=${ENABLE_TELEGRAM_NOTIFICATIONS:-true}
+      
+      # Agent
+      - MAX_ANALYSIS_TIME=${MAX_ANALYSIS_TIME:-30}
+      
+      # Logging
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - DEBUG_MODE=${DEBUG_MODE:-false}
+    
+    volumes:
+      - ./memory:/app/memory
+      - ./cloned-repos:/app/cloned-repos
+    
+    restart: unless-stopped
+    
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  default:
+    name: smart-audit-network

@@ -1,0 +1,59 @@
+{
+  "name": "smart-audit-agent",
+  "version": "1.0.0",
+  "description": "Production-quality autonomous smart contract security audit agent using ADK-TS",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "build": "tsc",
+    "clean": "rimraf dist",
+    "prebuild": "pnpm clean",
+    "test": "vitest",
+    "test:unit": "vitest run",
+    "lint": "eslint src --ext .ts,.tsx",
+    "format": "prettier --write \"src/**/*.{ts,tsx,json}\"",
+    "server": "tsx src/server.ts",
+    "dev:server": "tsx watch src/server.ts",
+    "demo:dry": "tsx src/demo/dry-run.ts",
+    "demo:live": "tsx src/demo/live-run.ts"
+  },
+  "keywords": [
+    "smart-contract",
+    "security",
+    "audit",
+    "blockchain",
+    "ai-agent",
+    "adk-ts",
+    "arbitrum",
+    "sepolia"
+  ],
+  "author": "SmartAudit Team",
+  "license": "MIT",
+  "dependencies": {
+    "@hono/node-server": "^1.12.0",
+    "@iqai/adk": "^0.3.2",
+    "@octokit/rest": "^21.0.0",
+    "dotenv": "^17.2.2",
+    "ethers": "^6.13.0",
+    "hono": "^4.6.0",
+    "node-telegram-bot-api": "^0.66.0",
+    "simple-git": "^3.25.0",
+    "ws": "^8.18.0",
+    "zod": "^4.1.5"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.1",
+    "@types/node-telegram-bot-api": "^0.64.0",
+    "@types/ws": "^8.5.10",
+    "eslint": "^9.0.0",
+    "prettier": "^3.3.0",
+    "rimraf": "^6.0.1",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2",
+    "vitest": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}
