@@ -318,7 +318,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- Built with [ADK-TS](https://github.com/iqai/adk-ts) - Agent Development Kit for TypeScript
+- Built with [ADK-TS](https://adk.iqai.com/) - Agent Development Kit for TypeScript
 - Powered by [Google Gemini 2.5 Flash](https://deepmind.google/technologies/gemini/)
 - Static analysis by [Slither](https://github.com/crytic/slither)
 - Deployed on [Arbitrum Sepolia](https://sepolia.arbiscan.io/)
