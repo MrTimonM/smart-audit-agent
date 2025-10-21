@@ -381,16 +381,7 @@ AgentBuilder.create('smart_audit_agent')
 
 ---
 
-## 🤝 Contributing
 
-This is a demo project showcasing ADK-TS capabilities. For production use:
-
-1. Add comprehensive error handling
-2. Implement rate limiting
-3. Add authentication/authorization
-4. Expand test coverage
-5. Add monitoring and alerting
-6. Implement caching layers
 
 ---
 
@@ -418,17 +409,7 @@ For issues or questions:
 - Consult Arbitrum Sepolia docs for testnet issues
 
 ---
-
-## 🎯 Roadmap
-
-- [ ] Multi-chain support (Ethereum, Base, Optimism)
-- [ ] Advanced vulnerability patterns
-- [ ] Integration with more static analyzers
-- [ ] Formal verification support
-- [ ] Historical trend analysis
-- [ ] Team collaboration features
-- [ ] API rate limiting and quotas
-- [ ] Detailed gas optimization reports
+s
 
 ---
 
