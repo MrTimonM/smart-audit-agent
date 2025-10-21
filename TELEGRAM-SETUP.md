@@ -2,10 +2,10 @@
 
 ## ✅ Configuration Status
 
-Your `.env` file already has Telegram configured:
+Please create a new bot for this project
 ```
-TELEGRAM_TOKEN=7580914497:AAEPOCk--mWtpTdUt_2vC74_VJJvEN87hnE
-TELEGRAM_CHAT_ID=-1002506282512
+TELEGRAM_TOKEN Bot Token=75xxxx
+TELEGRAM_CHAT_ID=-xxxxxxxx
 ENABLE_TELEGRAM_NOTIFICATIONS=true
 ```
 
